@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
         
         calculate_population_fitness(population, &current_fitness_info);
 
-        fprintf(fp, "%d,%d,%f\n", current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
+        fprintf(fp, "%d,%d,%.3f\n", current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
 
         print_generation(population, &current_fitness_info);
 
