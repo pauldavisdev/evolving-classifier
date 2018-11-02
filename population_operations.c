@@ -13,8 +13,6 @@ void generate_random_population(individual *population) {
 
             population[i].gene[j] = rand() % 2;
         }
-        
-        calculate_individual_fitness(&population[i]);
     }
 }
 
@@ -127,10 +125,6 @@ void crossover(individual *offspring) {
                 parent_2.gene[k] = temp.gene[k];
             }
 
-            calculate_individual_fitness(&parent_1);
-
-            calculate_individual_fitness(&parent_2);
-
             // printf("\nNew parent 1: ");
             // print_individual(&parent_1);
             // printf("\nNew parent 2: ");
@@ -163,8 +157,6 @@ void mutate(individual *offspring) {
                 k++;
             }
         }
-
-        calculate_individual_fitness(&offspring[i]);
     }
     printf("%d bits mutated\n", k);
     
