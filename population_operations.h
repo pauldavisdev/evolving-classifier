@@ -2,15 +2,23 @@
 
 #define POPULATION_OPERATIONS_H
 
-#define N 100
+#define N 60
 
-#define P 100
+#define P 5
 
-#define G 300
+#define G 5
+
+#define C 5
+
+#define R 10
+
+#define INPUT_R 32
 
 #define PROB_C 0.8
 
 #define PROB_M 0.0019
+
+#define BUF_SIZE 255
 
 typedef struct {
     int gene[N];
@@ -22,6 +30,13 @@ typedef struct {
     int max;
     float average;
 } fitness_info;
+
+typedef struct {
+    int condition[C];
+    int action;
+} rule;
+
+void print_rule(rule *rule);
 
 void generate_random_population(individual *population);
 

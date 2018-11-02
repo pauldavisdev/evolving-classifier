@@ -172,18 +172,47 @@ void mutate(individual *offspring) {
 
 void calculate_individual_fitness(individual *individual) {
     
-    int i;
+    int i, j;
+
+    // k is used as individual's gene index
+    int k = 0;
 
     int fitness = 0;
 
-    for(i = 0; i < N; i++) {
+    rule rules[R];
 
-        if(individual->gene[i] == 1) {
-            fitness++;
+    rule *rule_ptr = rules;
+
+    for(i = 0; i < R; i++) {
+
+        for(j = 0; j < C; j++) {
+           
+            rule_ptr->condition[j] = individual->gene[k++];    
+ 
         }
 
+        // assign gene bit to the action of the rule that rule_ptr points to, 
+        // then increment rule_ptr to the next rule in rules array
+        
+        rule_ptr++->action = individual->gene[k++];      
     }
+
+    for(i = 0; i < R; i++) {
+        print_rule(&rules[i]);
+    }
+
     individual->fitness = fitness;
+}
+
+void print_rule(rule *rule) {
+    
+    for(int i = 0; i < C; i++)
+    {
+        printf("%d", rule->condition[i]);
+    }
+
+    printf(" %d\n", rule->action);
+    
 }
 
 void print_individual(individual *individual) {

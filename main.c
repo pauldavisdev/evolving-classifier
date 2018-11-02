@@ -27,7 +27,48 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    FILE *fp;
+    FILE *fp, *rp;
+    
+    char buffer[BUF_SIZE];
+
+    rp = fopen ("data1.txt", "r");
+
+    // ignore first line
+    fgets(buffer, BUF_SIZE, (FILE*) rp);
+
+    rule input_rules[INPUT_R];
+
+    int i, j;
+
+    i = 0;
+
+    while(fgets(buffer, BUF_SIZE, (FILE*) rp)) {
+
+        const char* line_condition = strtok(buffer, " ");
+
+        const char* line_action = strtok(NULL, " ");
+
+            for (j = 0; j < strlen(line_condition); j++) {
+                input_rules[i].condition[j] = (line_condition[j] - '0');
+            }
+
+        input_rules[i].action = line_action[0] - '0';            
+        
+        i++;
+    }
+
+    printf("\nINPUT DATA\n");
+    
+    
+    for(i = 0; i < INPUT_R; i++)
+    {
+        print_rule(&input_rules[i]);
+    }
+    
+
+    printf("\nEND OF INPUT DATA\n");
+
+    fclose(rp);
 
     fp = fopen ("results.csv","w");
 
