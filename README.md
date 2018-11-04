@@ -1,6 +1,6 @@
-# Simple Genetic Algorithm
+# Evolving Classifier
 
-Simple genetic algorithm which uses either roulette wheel or tournament selection, single-point crossover, and bit-wise mutation.
+Implementation of an evolving classifier that correctly classifies a given set of input variables. I have used my simple GA as a starting point.
 
 ### Build
 
@@ -8,12 +8,4 @@ Simple genetic algorithm which uses either roulette wheel or tournament selectio
 
 ### Run
 
-Uses tournament selection as default.
-
 `./main`
-
-To use roulette wheel selection use command option -rw.
-
-`./main -rw`
-
-Plots graph showing max fitness across generations using [gnuplot](http://www.gnuplot.info/ "gnuplot").
