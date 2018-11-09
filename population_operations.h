@@ -4,7 +4,7 @@
 
 #define N 60
 
-#define P 5
+#define P 20
 
 #define G 5
 
@@ -16,7 +16,7 @@
 
 #define PROB_C 0.8
 
-#define PROB_M 0.0019
+#define PROB_M 0.0333
 
 #define BUF_SIZE 255
 
@@ -33,7 +33,7 @@ typedef struct {
 
 typedef struct {
     int condition[C];
-    int action;
+    int output;
 } rule;
 
 void print_rule(rule *rule);
@@ -42,7 +42,9 @@ void generate_random_population(individual *population);
 
 void print_generation(individual *generation, fitness_info *current_fitness_info);
 
-void calculate_individual_fitness(individual *individual);
+void calculate_individual_fitness(individual *individual, rule *input_rules);
+
+int compare_rule(rule *individual_rule, rule *input_rule);
 
 void roulette_wheel_selection(individual *population, individual *offspring, fitness_info *current_fitness_info);
 

@@ -162,7 +162,7 @@ void mutate(individual *offspring) {
     
 }
 
-void calculate_individual_fitness(individual *individual) {
+void calculate_individual_fitness(individual *individual, rule *input_rules) {
     
     int i, j;
 
@@ -173,27 +173,48 @@ void calculate_individual_fitness(individual *individual) {
 
     rule rules[R];
 
-    rule *rule_ptr = rules;
-
     for(i = 0; i < R; i++) {
 
         for(j = 0; j < C; j++) {
            
-            rule_ptr->condition[j] = individual->gene[k++];    
+            rules[i].condition[j] = individual->gene[k++];    
  
         }
-
-        // assign gene bit to the action of the rule that rule_ptr points to, 
-        // then increment rule_ptr to the next rule in rules array
-        
-        rule_ptr++->action = individual->gene[k++];      
+        rules[i].output = individual->gene[k++];      
     }
 
     for(i = 0; i < R; i++) {
-        print_rule(&rules[i]);
+        //print_rule(&rules[i]);
     }
 
+    // pass population rules array over input rules array to check for a match
+    for(i = 0; i < R; i++) {       
+        for(j = 0; j < INPUT_R; j++) {
+            if(compare_rule(&rules[i], &input_rules[j])) {           
+                fitness++;
+            }
+        }       
+    }
     individual->fitness = fitness;
+}
+
+int compare_rule(rule *individual_rule, rule *input_rule) {
+
+    int condition_match_total = 0;
+    
+    for(int i = 0; i < C; i++) {
+        if(individual_rule->condition[i] == input_rule->condition[i]) {
+            condition_match_total++;
+        }
+    }
+
+    if(condition_match_total == C) {
+        if(individual_rule->output == input_rule->output) {
+            return 1;
+        }
+    }
+    
+    return 0;
 }
 
 void print_rule(rule *rule) {
@@ -203,7 +224,7 @@ void print_rule(rule *rule) {
         printf("%d", rule->condition[i]);
     }
 
-    printf(" %d\n", rule->action);
+    printf(" %d\n", rule->output);
     
 }
 
@@ -250,7 +271,7 @@ void plot_graph(int *x, int *y, int len) {
 
     int max_generation = 0;
 
-    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n plot '-' smooth csplines\n");
+    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n set yrange[0:10]\n plot '-' smooth csplines\n");
 
     for(i = 0; i < len; i++) {
         fprintf(p, "%d %d\n", x[i], y[i]);

@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
 
-    srand(564);
+    srand(1234);
 
     individual population[P];
 
@@ -46,13 +46,13 @@ int main(int argc, char *argv[]) {
 
         const char* line_condition = strtok(buffer, " ");
 
-        const char* line_action = strtok(NULL, " ");
+        const char* line_output = strtok(NULL, " ");
 
             for (j = 0; j < strlen(line_condition); j++) {
                 input_rules[i].condition[j] = (line_condition[j] - '0');
             }
 
-        input_rules[i].action = line_action[0] - '0';            
+        input_rules[i].output = line_output[0] - '0';            
         
         i++;
     }
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
     while(number_of_generations < G) {
         
         for (i = 0; i < P; i++) {
-            calculate_individual_fitness(&population[i]);
+            calculate_individual_fitness(&population[i], input_rules);
         }
 
         calculate_population_fitness(population, &current_fitness_info);
