@@ -60,8 +60,7 @@ int main(int argc, char *argv[]) {
     printf("\nINPUT DATA\n");
     
     
-    for(i = 0; i < INPUT_R; i++)
-    {
+    for(i = 0; i < INPUT_R; i++) {
         print_rule(&input_rules[i]);
     }
     
@@ -72,19 +71,21 @@ int main(int argc, char *argv[]) {
 
     fp = fopen ("results.csv","w");
 
-    fprintf(fp, "Max,Total,Average\n");
+    fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\n", PROB_C, PROB_M, P);
+
+    fprintf(fp, "Generation,Max,Total,Average\n");
 
     generate_random_population(population);
     
     while(number_of_generations < G) {
-        
+
         for (i = 0; i < P; i++) {
             calculate_individual_fitness(&population[i], input_rules);
         }
 
         calculate_population_fitness(population, &current_fitness_info);
 
-        fprintf(fp, "%d,%d,%.3f\n", current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
+        fprintf(fp, "%d,%d,%d,%.3f\n", number_of_generations + 1, current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
 
         print_generation(population, &current_fitness_info);
 
@@ -95,9 +96,9 @@ int main(int argc, char *argv[]) {
         number_of_generations++;
 
         if(roulette_wheel == 1) {
-        roulette_wheel_selection(population, offspring, &current_fitness_info);
+            roulette_wheel_selection(population, offspring, &current_fitness_info);
         } else {
-        tournament_selection(population, offspring);
+            tournament_selection(population, offspring);
         }
 
         printf("\nGeneration %d\n", number_of_generations);
