@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
 
-    srand(1234);
+    srand(RAND_SEED);
 
     individual population[P];
 

@@ -2,6 +2,8 @@
 
 #define POPULATION_OPERATIONS_H
 
+#define RAND_SEED 1234
+
 #define N 60
 
 #define P 20
