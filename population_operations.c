@@ -48,7 +48,7 @@ void roulette_wheel_selection(individual *population, individual *offspring, fit
 
         j = 0;
 
-        while(running_total <= selection_point) {
+        while (running_total <= selection_point) {
 
             running_total += population[j].fitness;
             
@@ -111,12 +111,6 @@ void crossover(individual *offspring) {
             
             temp = parent_1;
 
-            // printf("\n\ncrossover point is %d\n", crossover_point);
-            // printf("\nOld parent 1: ");
-            // print_individual(&parent_1);
-            // printf("\nOld parent 2: ");
-            // print_individual(&parent_2);
-
             for(j = crossover_point; j < N; j++) {
                 parent_1.gene[j] = parent_2.gene[j];
             }
@@ -124,11 +118,6 @@ void crossover(individual *offspring) {
             for(k = crossover_point; k < N; k++) {
                 parent_2.gene[k] = temp.gene[k];
             }
-
-            // printf("\nNew parent 1: ");
-            // print_individual(&parent_1);
-            // printf("\nNew parent 2: ");
-            // print_individual(&parent_2);
 
             l++;         
         }
