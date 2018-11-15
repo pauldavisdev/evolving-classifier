@@ -2,23 +2,23 @@
 
 #define POPULATION_OPERATIONS_H
 
-#define RAND_SEED 999
+#define RAND_SEED 999 //time(NULL)
 
-#define N 60
+#define N 80
 
 #define P 20
 
-#define G 10
+#define G 50
 
-#define C 5
+#define C 7
 
 #define R 10
 
-#define INPUT_R 32
+#define INPUT_R 64
 
-#define PROB_C 0.8
+#define PROB_C 0.7
 
-#define PROB_M 0.0333
+#define PROB_M 0.03125
 
 #define BUF_SIZE 255
 

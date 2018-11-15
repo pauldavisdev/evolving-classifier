@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     
     char buffer[BUF_SIZE];
 
-    rp = fopen ("data/data1.txt", "r");
+    rp = fopen ("data/data2.txt", "r");
 
     // ignore first line
     fgets(buffer, BUF_SIZE, (FILE*) rp);
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
 
     timenow = gmtime(&now);
 
-    strftime(filename, sizeof(filename), "data1_%Y%m%d_%H%M%S.csv", timenow);
+    strftime(filename, sizeof(filename), "data2_%Y%m%d_%H%M%S.csv", timenow);
 
     fp = fopen (filename,"w");
 

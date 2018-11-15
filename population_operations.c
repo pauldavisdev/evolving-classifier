@@ -294,7 +294,7 @@ void plot_graph(int *x, int *y, int len) {
 
     int max_generation = 0;
 
-    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n set yrange[0:10]\n plot '-' smooth csplines\n");
+    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n set yrange[0:20]\n plot '-' smooth csplines\n");
 
     for(i = 0; i < len; i++) {
         fprintf(p, "%d %d\n", x[i], y[i]);
