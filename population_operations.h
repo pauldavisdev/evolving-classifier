@@ -4,21 +4,21 @@
 
 #define RAND_SEED 999
 
-#define N 60
+#define N 120
 
-#define P 20
+#define P 40
 
-#define G 10
+#define G 250
 
 #define C 5
 
-#define R 10
+#define R 20
 
 #define INPUT_R 32
 
 #define PROB_C 0.8
 
-#define PROB_M 0.0333
+#define PROB_M 0.025
 
 #define BUF_SIZE 255
 
