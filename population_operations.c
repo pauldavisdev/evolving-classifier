@@ -14,6 +14,7 @@ void generate_random_population(individual *population) {
             population[i].gene[j] = rand() % 2;
         }
     }
+    
 }
 
 void print_generation(individual *generation, fitness_info *current_fitness_info) {
@@ -225,7 +226,7 @@ void print_individual(individual *individual) {
         printf("%d", individual->gene[i]);
     }
 
-    printf("\n");
+    printf(" : fitness is %d\n", individual->fitness);
 }
 
 void calculate_population_fitness(individual *population, fitness_info *current_fitness_info) {
@@ -248,6 +249,39 @@ void calculate_population_fitness(individual *population, fitness_info *current_
     }
 
     current_fitness_info->average = (float)current_fitness_info->total / P;
+}
+
+void get_best_individual(individual *population, individual *best_individual) {
+
+    int max_fitness = 0;
+
+    for(int i = 0; i < P; i++) {
+        if(population[i].fitness > max_fitness) {
+                memcpy(best_individual, &population[i], sizeof(individual));
+                max_fitness = population[i].fitness;
+        }
+    }
+    printf("best fitness: %d\n", max_fitness);
+}
+
+void replace_worst_individual(individual *population, individual *best_individual) {
+    memcpy(&population[get_index_of_worst(population)], best_individual, sizeof(individual));
+}
+
+int get_index_of_worst(individual *population) {
+    int i = 0;
+
+    int index_of_worst = 0;
+
+    int worst_fitness = population[i].fitness;
+
+    for (i = 0; i < P; i++) {
+        if (population[i].fitness < worst_fitness) {
+            index_of_worst = i;
+            worst_fitness = population[i].fitness;
+        }
+    }
+    return index_of_worst;
 }
 
 void plot_graph(int *x, int *y, int len) {

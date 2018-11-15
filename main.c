@@ -6,10 +6,12 @@
 int main(int argc, char *argv[]) {
 
     srand(RAND_SEED);
-
+    
     individual population[P];
 
     individual offspring[P];
+
+    individual best_individual;
     
     fitness_info current_fitness_info;
     
@@ -76,7 +78,7 @@ int main(int argc, char *argv[]) {
     fprintf(fp, "Generation,Max,Total,Average\n");
 
     generate_random_population(population);
-    
+
     while(number_of_generations < G) {
 
         for (i = 0; i < P; i++) {
@@ -85,9 +87,15 @@ int main(int argc, char *argv[]) {
 
         calculate_population_fitness(population, &current_fitness_info);
 
-        fprintf(fp, "%d,%d,%d,%.3f\n", number_of_generations + 1, current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
+        get_best_individual(population, &best_individual);
 
+        fprintf(fp, "%d,%d,%d,%.3f\n", number_of_generations + 1, current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
+        
         print_generation(population, &current_fitness_info);
+
+        printf("best individual: ");
+
+        print_individual(&best_individual);
 
         x[number_of_generations] = number_of_generations;
 
@@ -107,7 +115,24 @@ int main(int argc, char *argv[]) {
 
         mutate(offspring);
 
-        memcpy(&population, &offspring, sizeof(offspring));        
+        //copy best results from offspring to population
+        memcpy(&population, &offspring, sizeof(offspring));
+
+        printf("before worst:\n");
+        print_generation(population, &current_fitness_info);
+
+        replace_worst_individual(population, &best_individual);
+
+        for (i = 0; i < P; i++) {
+            calculate_individual_fitness(&population[i], input_rules);
+        }
+        
+        calculate_population_fitness(population, &current_fitness_info);
+
+        printf("after worst has been replaced:\n");
+
+        print_generation(population, &current_fitness_info);
+
     }
 
     plot_graph(x, y, G);

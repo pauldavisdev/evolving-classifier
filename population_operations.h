@@ -2,13 +2,13 @@
 
 #define POPULATION_OPERATIONS_H
 
-#define RAND_SEED 1234
+#define RAND_SEED 999
 
 #define N 60
 
 #define P 20
 
-#define G 5
+#define G 10
 
 #define C 5
 
@@ -39,6 +39,12 @@ typedef struct {
 } rule;
 
 void print_rule(rule *rule);
+
+void get_best_individual(individual *population, individual *best_individual);
+
+int get_index_of_worst(individual *population);
+
+void replace_worst_individual(individual *population, individual *best_individual);
 
 void generate_random_population(individual *population);
 
