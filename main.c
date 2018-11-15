@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "population_operations.h"
 
 int main(int argc, char *argv[]) {
@@ -71,7 +72,17 @@ int main(int argc, char *argv[]) {
 
     fclose(rp);
 
-    fp = fopen ("results.csv","w");
+    char filename[40];
+
+    struct tm *timenow;
+
+    time_t now = time(NULL);
+
+    timenow = gmtime(&now);
+
+    strftime(filename, sizeof(filename), "data1_%Y%m%d_%H%M%S.csv", timenow);
+
+    fp = fopen (filename,"w");
 
     fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\n", PROB_C, PROB_M, P);
 
