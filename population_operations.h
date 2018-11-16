@@ -2,23 +2,23 @@
 
 #define POPULATION_OPERATIONS_H
 
-#define RAND_SEED 999
+#define RAND_SEED 1237
 
-#define N 120
+#define N 60
 
-#define P 40
+#define P 20
 
-#define G 250
+#define G 50
 
 #define C 5
 
-#define R 20
+#define R 10
 
 #define INPUT_R 32
 
-#define PROB_C 0.8
+#define PROB_C 0.7
 
-#define PROB_M 0.025
+#define PROB_M 0.033
 
 #define BUF_SIZE 255
 
@@ -52,7 +52,9 @@ void print_generation(individual *generation, fitness_info *current_fitness_info
 
 void calculate_individual_fitness(individual *individual, rule *input_rules);
 
-int compare_rule(rule *individual_rule, rule *input_rule);
+int compare_condition(rule *individual_rule, rule *input_rule);
+
+int compare_output(rule *individual_rule, rule *input_rule);
 
 void roulette_wheel_selection(individual *population, individual *offspring, fitness_info *current_fitness_info);
 
