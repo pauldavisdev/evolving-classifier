@@ -129,20 +129,7 @@ int main(int argc, char *argv[]) {
         //copy best results from offspring to population
         memcpy(&population, &offspring, sizeof(offspring));
 
-        printf("before worst:\n");
-        print_generation(population, &current_fitness_info);
-
         replace_worst_individual(population, &best_individual);
-
-        for (i = 0; i < P; i++) {
-            calculate_individual_fitness(&population[i], input_rules);
-        }
-        
-        calculate_population_fitness(population, &current_fitness_info);
-
-        printf("after worst has been replaced:\n");
-
-        print_generation(population, &current_fitness_info);
 
     }
 
