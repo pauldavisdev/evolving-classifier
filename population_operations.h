@@ -4,9 +4,11 @@
 
 #define RAND_SEED 999 //time(NULL)
 
-#define N 80
+#define RUNS 10
 
-#define P 20
+#define N 60
+
+#define P 30
 
 #define G 50
 
@@ -16,9 +18,9 @@
 
 #define INPUT_R 64
 
-#define PROB_C 0.7
+#define PROB_C 0.75
 
-#define PROB_M 0.03125
+#define PROB_M 0.025
 
 #define BUF_SIZE 255
 

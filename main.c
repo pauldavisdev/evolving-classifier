@@ -2,77 +2,152 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "population_operations.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
+    srand(time(NULL));
 
-    srand(RAND_SEED);
-    
+    int number_of_runs = 0;
+
+    int number_of_generations = 0;
+
     individual population[P];
 
     individual offspring[P];
 
     individual best_individual;
-    
+
     fitness_info current_fitness_info;
     
-    int number_of_generations = 0;
+    // arrays to store fitness stats of all runs and generations
+    int max_fitness_array[RUNS][G];
 
-    int x[G];
+    int total_fitness_array[RUNS][G];
 
-    int y[G];
+    float average_fitness_array[RUNS][G];
 
-    int roulette_wheel = 0;
+    /* begin reading input data */
+    FILE *rp;
 
-    if( argc == 2 ) {
-        if(!strcmp(argv[1], "-rw")) {
-            roulette_wheel = 1;
-        }
-    }
-
-    FILE *fp, *rp;
-    
     char buffer[BUF_SIZE];
 
-    rp = fopen ("data/data2.txt", "r");
+    // open input data file
+    rp = fopen("data/data1.txt", "r");
 
-    // ignore first line
-    fgets(buffer, BUF_SIZE, (FILE*) rp);
+    // ignore first line of input data
+    fgets(buffer, BUF_SIZE, (FILE *)rp);
 
     rule input_rules[INPUT_R];
 
-    int i, j;
+    int i = 0;
 
-    i = 0;
-
-    while(fgets(buffer, BUF_SIZE, (FILE*) rp)) {
-
-        const char* line_condition = strtok(buffer, " ");
-
-        const char* line_output = strtok(NULL, " ");
-
-            for (j = 0; j < strlen(line_condition); j++) {
-                input_rules[i].condition[j] = (line_condition[j] - '0');
-            }
-
-        input_rules[i].output = line_output[0] - '0';            
+    while (fgets(buffer, BUF_SIZE, (FILE *)rp))
+    {
         
+        const char *line_condition = strtok(buffer, " ");
+
+        const char *line_output = strtok(NULL, " ");
+
+        for (int j = 0; j < strlen(line_condition); j++)
+        {
+            input_rules[i].condition[j] = (line_condition[j] - '0');
+        }
+
+        input_rules[i].output = line_output[0] - '0';
+
         i++;
     }
 
     printf("\nINPUT DATA\n");
-    
-    
-    for(i = 0; i < INPUT_R; i++) {
+
+    for (i = 0; i < INPUT_R; i++)
+    {
         print_rule(&input_rules[i]);
     }
-    
 
     printf("\nEND OF INPUT DATA\n");
 
     fclose(rp);
+    /* end reading input data */
 
-    char filename[40];
+    for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++)
+    {
+
+        int roulette_wheel = 0;
+
+        if (argc == 2)
+        {
+            if (!strcmp(argv[1], "-rw"))
+            {
+                roulette_wheel = 1;
+            }
+        }
+
+        generate_random_population(population);
+
+        number_of_generations = 0;
+
+        while (number_of_generations < G)
+        {
+            
+            for (i = 0; i < P; i++) {
+                calculate_individual_fitness(&population[i], input_rules);
+            }
+
+            calculate_population_fitness(population, &current_fitness_info);
+
+            get_best_individual(population, &best_individual);
+
+            print_generation(population, &current_fitness_info);
+
+            printf("best individual: ");
+
+            print_individual(&best_individual);
+
+            max_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.max;
+
+            average_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.average;
+
+            total_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.total;
+
+            number_of_generations++;
+
+            if (roulette_wheel == 1)
+            {
+                roulette_wheel_selection(population, offspring, &current_fitness_info);
+            }
+            else
+            {
+                tournament_selection(population, offspring);
+            }
+
+            printf("\nGeneration %d\n", number_of_generations);
+
+            crossover(offspring);
+
+            mutate(offspring);
+
+            //copy best results from offspring to population
+            memcpy(&population, &offspring, sizeof(offspring));
+
+            // replace the worst individual of population with the best individual of previous gen's
+            replace_worst_individual(population, &best_individual);
+        }
+
+        printf("number of runs %d", number_of_runs);
+        
+        //plot_graph(x, y, G);
+    }
+
+    /* write run/generation fitness stats to csv file */
+
+    FILE *fp;
+
+    char dateTimeString[30];
 
     struct tm *timenow;
 
@@ -80,60 +155,46 @@ int main(int argc, char *argv[]) {
 
     timenow = gmtime(&now);
 
-    strftime(filename, sizeof(filename), "data2_%Y%m%d_%H%M%S.csv", timenow);
+    char folderName[40];
 
-    fp = fopen (filename,"w");
+    sprintf(folderName, "N%d_P%d_C%.3f_M%.3f", N, P, PROB_C, PROB_M);
 
-    fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\n", PROB_C, PROB_M, P);
+    mkdir(folderName, 0777);
 
-    fprintf(fp, "Generation,Max,Total,Average\n");
+    strftime(dateTimeString, sizeof(dateTimeString), "data1_%Y%m%d_%H%M%S_", timenow);
 
-    generate_random_population(population);
+    char filename[80];
 
-    while(number_of_generations < G) {
+    sprintf(filename, "%s/%s.csv", folderName, dateTimeString);
 
-        for (i = 0; i < P; i++) {
-            calculate_individual_fitness(&population[i], input_rules);
+    fp = fopen(filename, "w");
+
+    for (int i = 0; i < G; i++)
+    {
+
+        if (i == 0)
+        {
+
+            fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\nGeneration,", PROB_C, PROB_M, P);
+
+            for (int k = 0; k < RUNS; k++)
+            {
+                fprintf(fp, "Run %d Max,Run %d Total,Run %d Average,", k + 1, k + 1, k + 1);
+            }
+
+            fprintf(fp, "\n");
         }
 
-        calculate_population_fitness(population, &current_fitness_info);
-
-        get_best_individual(population, &best_individual);
-
-        fprintf(fp, "%d,%d,%d,%.3f\n", number_of_generations + 1, current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
-        
-        print_generation(population, &current_fitness_info);
-
-        printf("best individual: ");
-
-        print_individual(&best_individual);
-
-        x[number_of_generations] = number_of_generations;
-
-        y[number_of_generations] = current_fitness_info.max;
-
-        number_of_generations++;
-
-        if(roulette_wheel == 1) {
-            roulette_wheel_selection(population, offspring, &current_fitness_info);
-        } else {
-            tournament_selection(population, offspring);
+        fprintf(fp, "%d,", i + 1);
+        for (int j = 0; j < RUNS; j++)
+        {
+            fprintf(fp, "%d,%d,%.3f,", max_fitness_array[j][i], total_fitness_array[j][i], average_fitness_array[j][i]);
         }
-
-        printf("\nGeneration %d\n", number_of_generations);
-
-        crossover(offspring);
-
-        mutate(offspring);
-
-        //copy best results from offspring to population
-        memcpy(&population, &offspring, sizeof(offspring));
-
-        replace_worst_individual(population, &best_individual);
-
+        fprintf(fp, "\n");
     }
 
-    plot_graph(x, y, G);
+    fclose(fp);
+    /* end writing to csv file */
 
     return 0;
 }
