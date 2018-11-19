@@ -52,7 +52,9 @@ void print_generation(individual *generation, fitness_info *current_fitness_info
 
 void calculate_individual_fitness(individual *individual, rule *input_rules);
 
-int compare_rule(rule *individual_rule, rule *input_rule);
+int compare_condition(rule *individual_rule, rule *input_rule);
+
+int compare_output(rule *individual_rule, rule *input_rule);
 
 void roulette_wheel_selection(individual *population, individual *offspring, fitness_info *current_fitness_info);
 

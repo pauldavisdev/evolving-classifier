@@ -11,6 +11,10 @@ void generate_random_population(individual *population) {
 
         for(j = 0; j < N; j++) {
 
+            population[i].gene[j] = rand() % 3;
+        }
+
+        for(j = C; j < N; j+= C + 1) {
             population[i].gene[j] = rand() % 2;
         }
     }
@@ -140,10 +144,23 @@ void mutate(individual *offspring) {
 
             random = (float)rand() / RAND_MAX;
 
-            if(random <= PROB_M) {
+            // check gene[j] is not output
 
-                offspring[i].gene[j] = 1 - offspring[i].gene[j];
-                
+            if(random <= PROB_M) {
+                if(offspring[i].gene[j] == 2) {
+                    offspring[i].gene[j] = 1;
+                } else if(offspring[i].gene[j] == 0){
+                    offspring[i].gene[j] = 2;
+                } else {
+                    offspring[i].gene[j] = 0;
+                    // random = (float)rand() / RAND_MAX;
+                    // if(random <= 0.5) {
+                    //     offspring[i].gene[j] = 1;
+                    // } else {
+                    //     offspring[i].gene[j] = 0;
+                    // }
+                }
+                               
                 k++;
             }
         }
@@ -177,34 +194,44 @@ void calculate_individual_fitness(individual *individual, rule *input_rules) {
         //print_rule(&rules[i]);
     }
 
-    // pass population rules array over input rules array to check for a match
-    for(i = 0; i < R; i++) {       
-        for(j = 0; j < INPUT_R; j++) {
-            if(compare_rule(&rules[i], &input_rules[j])) {           
-                fitness++;
-            }
-        }       
+    for(i = 0; i < INPUT_R; i++) {       
+        for(j = 0; j < R; j++) {
+            if(compare_condition(&rules[j], &input_rules[i])) {           
+                if(compare_output(&rules[j], &input_rules[i])) {
+                    fitness++;
+                }
+                break;
+            }          
+        }
     }
     individual->fitness = fitness;
 }
 
-int compare_rule(rule *individual_rule, rule *input_rule) {
-
-    int condition_match_total = 0;
+int compare_condition(rule *individual_rule, rule *input_rule) {   
     
+    int condition_match_total = 0;
+
     for(int i = 0; i < C; i++) {
-        if(individual_rule->condition[i] == input_rule->condition[i]) {
+        if(individual_rule->condition[i] > 1) {
+            condition_match_total++;
+        } else if(individual_rule->condition[i] == input_rule->condition[i]) {
             condition_match_total++;
         }
     }
-
-    if(condition_match_total == C) {
-        if(individual_rule->output == input_rule->output) {
-            return 1;
-        }
-    }
     
-    return 0;
+    if(condition_match_total == C) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int compare_output(rule *individual_rule, rule *input_rule) {
+    if(individual_rule->output == input_rule->output) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 void print_rule(rule *rule) {
@@ -294,7 +321,7 @@ void plot_graph(int *x, int *y, int len) {
 
     int max_generation = 0;
 
-    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n set yrange[0:20]\n plot '-' smooth csplines\n");
+    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n set yrange[0:%d]\n plot '-' smooth csplines\n", INPUT_R);
 
     for(i = 0; i < len; i++) {
         fprintf(p, "%d %d\n", x[i], y[i]);
