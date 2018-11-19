@@ -10,7 +10,7 @@
 
 #define P 30
 
-#define G 300
+#define G 200
 
 #define C 5
 

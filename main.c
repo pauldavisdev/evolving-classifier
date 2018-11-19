@@ -7,33 +7,77 @@
 #include <sys/types.h>
 #include "population_operations.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
+    srand(time(NULL));
 
-    int number_of_runs;
+    int number_of_runs = 0;
 
-    for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++) {
+    int number_of_generations = 0;
 
-        //srand(RAND_SEED);
+    individual population[P];
 
-        srand(time(NULL));
+    individual offspring[P];
 
-        individual population[P];
+    individual best_individual;
 
-        individual offspring[P];
+    fitness_info current_fitness_info;
+    
+    // arrays to store fitness stats of all runs and generations
+    int max_fitness_array[RUNS][G];
 
-        individual best_individual;
+    int total_fitness_array[RUNS][G];
 
-        fitness_info current_fitness_info;
+    float average_fitness_array[RUNS][G];
 
-        int number_of_generations = 0;
+    /* begin reading input data */
+    FILE *rp;
 
-        int x[G];
+    char buffer[BUF_SIZE];
 
-        int y[G];
+    // open input data file
+    rp = fopen("data/data1.txt", "r");
+
+    // ignore first line of input data
+    fgets(buffer, BUF_SIZE, (FILE *)rp);
+
+    rule input_rules[INPUT_R];
+
+    int i = 0;
+
+    while (fgets(buffer, BUF_SIZE, (FILE *)rp))
+    {
+        
+        const char *line_condition = strtok(buffer, " ");
+
+        const char *line_output = strtok(NULL, " ");
+
+        for (int j = 0; j < strlen(line_condition); j++)
+        {
+            input_rules[i].condition[j] = (line_condition[j] - '0');
+        }
+
+        input_rules[i].output = line_output[0] - '0';
+
+        i++;
+    }
+
+    printf("\nINPUT DATA\n");
+
+    for (i = 0; i < INPUT_R; i++)
+    {
+        print_rule(&input_rules[i]);
+    }
+
+    printf("\nEND OF INPUT DATA\n");
+
+    fclose(rp);
+    /* end reading input data */
+
+    for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++)
+    {
 
         int roulette_wheel = 0;
-
-        float total_average = 0;
 
         if (argc == 2)
         {
@@ -43,76 +87,13 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        FILE *fp, *rp;
-
-        char buffer[BUF_SIZE];
-
-        rp = fopen("data/data1.txt", "r");
-
-        // ignore first line
-        fgets(buffer, BUF_SIZE, (FILE *)rp);
-
-        rule input_rules[INPUT_R];
-
-        int i, j;
-
-        i = 0;
-
-        while (fgets(buffer, BUF_SIZE, (FILE *)rp)) {
-
-            const char *line_condition = strtok(buffer, " ");
-
-            const char *line_output = strtok(NULL, " ");
-
-            for (j = 0; j < strlen(line_condition); j++) {
-                input_rules[i].condition[j] = (line_condition[j] - '0');
-            }
-
-            input_rules[i].output = line_output[0] - '0';
-
-            i++;
-        }
-
-        printf("\nINPUT DATA\n");
-
-        for (i = 0; i < INPUT_R; i++) {
-            print_rule(&input_rules[i]);
-        }
-
-        printf("\nEND OF INPUT DATA\n");
-
-        fclose(rp);
-
-        char dateTimeString[30];
-
-        struct tm *timenow;
-
-        time_t now = time(NULL);
-
-        timenow = gmtime(&now);
-
-        char folderName[40];
-
-        sprintf(folderName, "N%d_P%d_C%.3f_M%.3f", N, P, PROB_C, PROB_M);
-
-        mkdir(folderName, 0777);
-
-        strftime(dateTimeString, sizeof(dateTimeString), "data1_%Y%m%d_%H%M%S_", timenow);
-
-        char filename[80];
-
-        sprintf(filename, "%s/%s_run_%d.csv", folderName, dateTimeString, number_of_runs + 1);
-
-        fp = fopen(filename, "w");
-
-        fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\n", PROB_C, PROB_M, P);
-
-        fprintf(fp, "Generation,Max,Total,Average\n");
-
         generate_random_population(population);
 
-        while (number_of_generations < G) {
+        number_of_generations = 0;
 
+        while (number_of_generations < G)
+        {
+            
             for (i = 0; i < P; i++) {
                 calculate_individual_fitness(&population[i], input_rules);
             }
@@ -121,26 +102,26 @@ int main(int argc, char *argv[]) {
 
             get_best_individual(population, &best_individual);
 
-            fprintf(fp, "%d,%d,%d,%.3f\n", number_of_generations + 1, current_fitness_info.max, current_fitness_info.total, current_fitness_info.average);
-
             print_generation(population, &current_fitness_info);
 
             printf("best individual: ");
 
             print_individual(&best_individual);
 
-            x[number_of_generations] = number_of_generations;
+            max_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.max;
 
-            y[number_of_generations] = current_fitness_info.average;
+            average_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.average;
 
-            total_average += current_fitness_info.average;
+            total_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.total;
 
             number_of_generations++;
 
-            if (roulette_wheel == 1) {
+            if (roulette_wheel == 1)
+            {
                 roulette_wheel_selection(population, offspring, &current_fitness_info);
             }
-            else {
+            else
+            {
                 tournament_selection(population, offspring);
             }
 
@@ -153,12 +134,67 @@ int main(int argc, char *argv[]) {
             //copy best results from offspring to population
             memcpy(&population, &offspring, sizeof(offspring));
 
+            // replace the worst individual of population with the best individual of previous gen's
             replace_worst_individual(population, &best_individual);
         }
-        fprintf(fp, "=AVERAGE(B3:B302)\n");
-        fprintf(fp, "=STDEV.P(B3:B302)");
-        fclose(fp);
+
+        printf("number of runs %d", number_of_runs);
+        
         //plot_graph(x, y, G);
     }
+
+    /* write run/generation fitness stats to csv file */
+
+    FILE *fp;
+
+    char dateTimeString[30];
+
+    struct tm *timenow;
+
+    time_t now = time(NULL);
+
+    timenow = gmtime(&now);
+
+    char folderName[40];
+
+    sprintf(folderName, "N%d_P%d_C%.3f_M%.3f", N, P, PROB_C, PROB_M);
+
+    mkdir(folderName, 0777);
+
+    strftime(dateTimeString, sizeof(dateTimeString), "data1_%Y%m%d_%H%M%S_", timenow);
+
+    char filename[80];
+
+    sprintf(filename, "%s/%s.csv", folderName, dateTimeString);
+
+    fp = fopen(filename, "w");
+
+    for (int i = 0; i < G; i++)
+    {
+
+        if (i == 0)
+        {
+
+            fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\nGeneration,", PROB_C, PROB_M, P);
+
+            for (int k = 0; k < RUNS; k++)
+            {
+                fprintf(fp, "Run %d Max,Run %d Total,Run %d Average,", k + 1, k + 1, k + 1);
+            }
+
+            fprintf(fp, "\n");
+        }
+
+        fprintf(fp, "%d,", i + 1);
+        for (int j = 0; j < RUNS; j++)
+        {
+            fprintf(fp, "%d,%d,%.3f,", max_fitness_array[j][i], total_fitness_array[j][i], average_fitness_array[j][i]);
+        }
+        fprintf(fp, "\n");
+    }
+
+    fclose(fp);
+    /* end writing to csv file */
+
     return 0;
 }
