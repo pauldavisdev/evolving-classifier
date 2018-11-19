@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     
     char buffer[BUF_SIZE];
 
-    rp = fopen ("data/data2.txt", "r");
+    rp = fopen ("data/data1.txt", "r");
 
     // ignore first line
     fgets(buffer, BUF_SIZE, (FILE*) rp);
