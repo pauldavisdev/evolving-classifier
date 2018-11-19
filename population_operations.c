@@ -144,11 +144,21 @@ void mutate(individual *offspring) {
 
             random = (float)rand() / RAND_MAX;
 
+            // check gene[j] is not output
+
             if(random <= PROB_M) {
                 if(offspring[i].gene[j] == 2) {
-                    offspring[i].gene[j] = rand() % 2;
+                    offspring[i].gene[j] = 1;
+                } else if(offspring[i].gene[j] == 0){
+                    offspring[i].gene[j] = 2;
                 } else {
-                    offspring[i].gene[j] = 1 - offspring[i].gene[j];
+                    offspring[i].gene[j] = 0;
+                    // random = (float)rand() / RAND_MAX;
+                    // if(random <= 0.5) {
+                    //     offspring[i].gene[j] = 1;
+                    // } else {
+                    //     offspring[i].gene[j] = 0;
+                    // }
                 }
                                
                 k++;
@@ -197,7 +207,7 @@ void calculate_individual_fitness(individual *individual, rule *input_rules) {
     individual->fitness = fitness;
 }
 
-int compare_condition(rule *input_rule, rule *individual_rule) {   
+int compare_condition(rule *individual_rule, rule *input_rule) {   
     
     int condition_match_total = 0;
 
@@ -216,7 +226,7 @@ int compare_condition(rule *input_rule, rule *individual_rule) {
     }
 }
 
-int compare_output(rule *input_rule, rule *individual_rule) {
+int compare_output(rule *individual_rule, rule *input_rule) {
     if(individual_rule->output == input_rule->output) {
         return 1;
     } else {
@@ -311,7 +321,7 @@ void plot_graph(int *x, int *y, int len) {
 
     int max_generation = 0;
 
-    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n set yrange[0:30]\n plot '-' smooth csplines\n");
+    fprintf(p, "set title \"Max Fitness by Generation\"\n set key left\n set xlabel \"Number of Generations\"\n set ylabel \"Max Fitness\"\n set yrange[0:64]\n plot '-' smooth csplines\n");
 
     for(i = 0; i < len; i++) {
         fprintf(p, "%d %d\n", x[i], y[i]);

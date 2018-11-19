@@ -2,23 +2,23 @@
 
 #define POPULATION_OPERATIONS_H
 
-#define RAND_SEED 1237
+#define RAND_SEED 12354
 
-#define N 60
+#define N 80
 
-#define P 20
+#define P 80
 
-#define G 50
+#define G 200
 
-#define C 5
+#define C 7
 
 #define R 10
 
-#define INPUT_R 32
+#define INPUT_R 64
 
-#define PROB_C 0.7
+#define PROB_C 0.8
 
-#define PROB_M 0.033
+#define PROB_M 0.018
 
 #define BUF_SIZE 255
 
