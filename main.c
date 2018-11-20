@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     char buffer[BUF_SIZE];
 
     // open input data file
-    rp = fopen("data/data1.txt", "r");
+    rp = fopen("data/data2.txt", "r");
 
     // ignore first line of input data
     fgets(buffer, BUF_SIZE, (FILE *)rp);
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
             replace_worst_individual(population, &best_individual);
         }
 
-        printf("number of runs %d", number_of_runs);
+        printf("number of runs %d", number_of_runs + 1);
         
         //plot_graph(x, y, G);
     }
@@ -157,11 +157,11 @@ int main(int argc, char *argv[])
 
     char folderName[40];
 
-    sprintf(folderName, "N%d_P%d_C%.3f_M%.3f", N, P, PROB_C, PROB_M);
+    sprintf(folderName, "N%d_P%d_C%.3f_M%.4f", N, P, PROB_C, PROB_M);
 
     mkdir(folderName, 0777);
 
-    strftime(dateTimeString, sizeof(dateTimeString), "data1_%Y%m%d_%H%M%S_", timenow);
+    strftime(dateTimeString, sizeof(dateTimeString), "data2_%Y%m%d_%H%M%S_", timenow);
 
     char filename[80];
 

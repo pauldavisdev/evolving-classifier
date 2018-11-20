@@ -6,21 +6,21 @@
 
 #define RUNS 10
 
-#define N 60
+#define N 80
 
-#define P 30
+#define P 80
 
-#define G 200
+#define G 250
 
-#define C 5
+#define C 7
 
 #define R 10
 
-#define INPUT_R 32
+#define INPUT_R 64
 
-#define PROB_C 0.75
+#define PROB_C 0.8
 
-#define PROB_M 0.025
+#define PROB_M 0.0125
 
 #define BUF_SIZE 255
 

@@ -148,17 +148,16 @@ void mutate(individual *offspring) {
 
             if(random <= PROB_M) {
                 if(offspring[i].gene[j] == 2) {
-                    offspring[i].gene[j] = 1;
+                    offspring[i].gene[j] = rand() % 2;
                 } else if(offspring[i].gene[j] == 0){
-                    offspring[i].gene[j] = 2;
+                    offspring[i].gene[j] = (rand() % 2) + 1;
                 } else {
-                    offspring[i].gene[j] = 0;
-                    // random = (float)rand() / RAND_MAX;
-                    // if(random <= 0.5) {
-                    //     offspring[i].gene[j] = 1;
-                    // } else {
-                    //     offspring[i].gene[j] = 0;
-                    // }
+                    int random_choice = rand() % 2;
+                    if(random_choice == 1) {
+                        offspring[i].gene[j] = 2;
+                    } else {
+                        offspring[i].gene[j] = 0;
+                    }
                 }
                                
                 k++;
