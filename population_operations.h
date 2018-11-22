@@ -16,16 +16,16 @@
 
 #define R 10
 
-#define INPUT_R 64
+#define INPUT_R 100
 
 #define PROB_C 0.8
 
 #define PROB_M 0.0125
 
-#define BUF_SIZE 255
+#define BUF_SIZE 9999
 
 typedef struct {
-    int gene[N];
+    float gene[N];
     int fitness;
 } individual;
 
@@ -36,7 +36,7 @@ typedef struct {
 } fitness_info;
 
 typedef struct {
-    int condition[C];
+    float condition[C];
     int output;
 } rule;
 

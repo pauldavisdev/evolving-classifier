@@ -10,12 +10,12 @@ void generate_random_population(individual *population) {
     for(i = 0; i < P; i++) {
 
         for(j = 0; j < N; j++) {
+            
+            if((j + 1) % 8 == 0) {
+                population[i].gene[j] = rand() % 2;
+            }
 
-            population[i].gene[j] = rand() % 3;
-        }
-
-        for(j = C; j < N; j+= C + 1) {
-            population[i].gene[j] = rand() % 2;
+            population[i].gene[j] = ((float)rand())/RAND_MAX;
         }
     }
     
@@ -237,7 +237,7 @@ void print_rule(rule *rule) {
     
     for(int i = 0; i < C; i++)
     {
-        printf("%d", rule->condition[i]);
+        printf("%.6f ", rule->condition[i]);
     }
 
     printf(" %d\n", rule->output);

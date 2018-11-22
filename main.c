@@ -36,165 +36,168 @@ int main(int argc, char *argv[])
     char buffer[BUF_SIZE];
 
     // open input data file
-    rp = fopen("data/data2.txt", "r");
+    rp = fopen("data/data3.txt", "r");
 
     // ignore first line of input data
     fgets(buffer, BUF_SIZE, (FILE *)rp);
 
     rule input_rules[INPUT_R];
 
-    int i = 0;
+    float rule_condition;
+    
+    float rule_output;
+    
+    int i, j;
 
-    while (fgets(buffer, BUF_SIZE, (FILE *)rp))
+    for(i = 0; i < INPUT_R; i++)
     {
-        
-        const char *line_condition = strtok(buffer, " ");
-
-        const char *line_output = strtok(NULL, " ");
-
-        for (int j = 0; j < strlen(line_condition); j++)
+        for (j = 0; j < C; j++)
         {
-            input_rules[i].condition[j] = (line_condition[j] - '0');
+            fscanf(rp,"%f",&rule_condition);
+            //printf("%.6f ",myvariable);
+            input_rules[i].condition[j] = rule_condition;
         }
-
-        input_rules[i].output = line_output[0] - '0';
-
-        i++;
+        fscanf(rp,"%f",&rule_output);
+        //printf("%d ", (int)myvariable);
+        input_rules[i].output = (int)rule_output;
+        //printf("\n");
     }
-
-    printf("\nINPUT DATA\n");
+  
+    fclose(rp); 
+    
+    printf("\nBEGIN INPUT DATA\n");
 
     for (i = 0; i < INPUT_R; i++)
     {
         print_rule(&input_rules[i]);
     }
 
-    printf("\nEND OF INPUT DATA\n");
+    printf("END OF INPUT DATA\n");
 
     fclose(rp);
     /* end reading input data */
 
-    for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++)
-    {
+    // for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++)
+    // {
 
-        int roulette_wheel = 0;
+    //     int roulette_wheel = 0;
 
-        if (argc == 2)
-        {
-            if (!strcmp(argv[1], "-rw"))
-            {
-                roulette_wheel = 1;
-            }
-        }
+    //     if (argc == 2)
+    //     {
+    //         if (!strcmp(argv[1], "-rw"))
+    //         {
+    //             roulette_wheel = 1;
+    //         }
+    //     }
 
-        generate_random_population(population);
+    //     generate_random_population(population);
 
-        number_of_generations = 0;
+    //     number_of_generations = 0;
 
-        while (number_of_generations < G)
-        {
+    //     while (number_of_generations < G)
+    //     {
             
-            for (i = 0; i < P; i++) {
-                calculate_individual_fitness(&population[i], input_rules);
-            }
+    //         for (i = 0; i < P; i++) {
+    //             calculate_individual_fitness(&population[i], input_rules);
+    //         }
 
-            calculate_population_fitness(population, &current_fitness_info);
+    //         calculate_population_fitness(population, &current_fitness_info);
 
-            get_best_individual(population, &best_individual);
+    //         get_best_individual(population, &best_individual);
 
-            print_generation(population, &current_fitness_info);
+    //         print_generation(population, &current_fitness_info);
 
-            printf("best individual: ");
+    //         printf("best individual: ");
 
-            print_individual(&best_individual);
+    //         print_individual(&best_individual);
 
-            max_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.max;
+    //         max_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.max;
 
-            average_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.average;
+    //         average_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.average;
 
-            total_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.total;
+    //         total_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.total;
 
-            number_of_generations++;
+    //         number_of_generations++;
 
-            if (roulette_wheel == 1)
-            {
-                roulette_wheel_selection(population, offspring, &current_fitness_info);
-            }
-            else
-            {
-                tournament_selection(population, offspring);
-            }
+    //         if (roulette_wheel == 1)
+    //         {
+    //             roulette_wheel_selection(population, offspring, &current_fitness_info);
+    //         }
+    //         else
+    //         {
+    //             tournament_selection(population, offspring);
+    //         }
 
-            printf("\nGeneration %d\n", number_of_generations);
+    //         printf("\nGeneration %d\n", number_of_generations);
 
-            crossover(offspring);
+    //         crossover(offspring);
 
-            mutate(offspring);
+    //         mutate(offspring);
 
-            //copy best results from offspring to population
-            memcpy(&population, &offspring, sizeof(offspring));
+    //         //copy best results from offspring to population
+    //         memcpy(&population, &offspring, sizeof(offspring));
 
-            // replace the worst individual of population with the best individual of previous gen's
-            replace_worst_individual(population, &best_individual);
-        }
+    //         // replace the worst individual of population with the best individual of previous gen's
+    //         replace_worst_individual(population, &best_individual);
+    //     }
 
-        printf("number of runs %d", number_of_runs + 1);
+    //     printf("number of runs %d", number_of_runs + 1);
         
-        //plot_graph(x, y, G);
-    }
+    //     //plot_graph(x, y, G);
+    // }
 
-    /* write run/generation fitness stats to csv file */
+    // /* write run/generation fitness stats to csv file */
 
-    FILE *fp;
+    // FILE *fp;
 
-    char dateTimeString[30];
+    // char dateTimeString[30];
 
-    struct tm *timenow;
+    // struct tm *timenow;
 
-    time_t now = time(NULL);
+    // time_t now = time(NULL);
 
-    timenow = gmtime(&now);
+    // timenow = gmtime(&now);
 
-    char folderName[40];
+    // char folderName[40];
 
-    sprintf(folderName, "N%d_P%d_C%.3f_M%.4f", N, P, PROB_C, PROB_M);
+    // sprintf(folderName, "N%d_P%d_C%.3f_M%.4f", N, P, PROB_C, PROB_M);
 
-    mkdir(folderName, 0777);
+    // mkdir(folderName, 0777);
 
-    strftime(dateTimeString, sizeof(dateTimeString), "data2_%Y%m%d_%H%M%S_", timenow);
+    // strftime(dateTimeString, sizeof(dateTimeString), "data2_%Y%m%d_%H%M%S_", timenow);
 
-    char filename[80];
+    // char filename[80];
 
-    sprintf(filename, "%s/%s.csv", folderName, dateTimeString);
+    // sprintf(filename, "%s/%s.csv", folderName, dateTimeString);
 
-    fp = fopen(filename, "w");
+    // fp = fopen(filename, "w");
 
-    for (int i = 0; i < G; i++)
-    {
+    // for (int i = 0; i < G; i++)
+    // {
 
-        if (i == 0)
-        {
+    //     if (i == 0)
+    //     {
 
-            fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\nGeneration,", PROB_C, PROB_M, P);
+    //         fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\nGeneration,", PROB_C, PROB_M, P);
 
-            for (int k = 0; k < RUNS; k++)
-            {
-                fprintf(fp, "Run %d Max,Run %d Total,Run %d Average,", k + 1, k + 1, k + 1);
-            }
+    //         for (int k = 0; k < RUNS; k++)
+    //         {
+    //             fprintf(fp, "Run %d Max,Run %d Total,Run %d Average,", k + 1, k + 1, k + 1);
+    //         }
 
-            fprintf(fp, "\n");
-        }
+    //         fprintf(fp, "\n");
+    //     }
 
-        fprintf(fp, "%d,", i + 1);
-        for (int j = 0; j < RUNS; j++)
-        {
-            fprintf(fp, "%d,%d,%.3f,", max_fitness_array[j][i], total_fitness_array[j][i], average_fitness_array[j][i]);
-        }
-        fprintf(fp, "\n");
-    }
+    //     fprintf(fp, "%d,", i + 1);
+    //     for (int j = 0; j < RUNS; j++)
+    //     {
+    //         fprintf(fp, "%d,%d,%.3f,", max_fitness_array[j][i], total_fitness_array[j][i], average_fitness_array[j][i]);
+    //     }
+    //     fprintf(fp, "\n");
+    // }
 
-    fclose(fp);
-    /* end writing to csv file */
+    // fclose(fp);
+    // /* end writing to csv file */
 
     return 0;
 }
