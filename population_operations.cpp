@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <random>
 #include "population_operations.h"
 
 void generate_random_population(individual *population) {
@@ -10,14 +11,14 @@ void generate_random_population(individual *population) {
     for(i = 0; i < P; i++) {
 
         for(j = 0; j < N; j++) {
-            
             if((j + 1) % 8 == 0) {
                 population[i].gene[j] = rand() % 2;
+            } else {
+                population[i].gene[j] = ((float)rand())/RAND_MAX;
             }
-
-            population[i].gene[j] = ((float)rand())/RAND_MAX;
+            }
         }
-    }
+    
     
 }
 
@@ -30,8 +31,11 @@ void print_generation(individual *generation, fitness_info *current_fitness_info
         printf("%d\t:\t", i + 1);
 
         for(j = 0; j < N; j++) {
-
-            printf("%d", generation[i].gene[j]);
+            if((j + 1) % 8 == 0) {
+                printf("%d ", (int)generation[i].gene[j]);           
+            } else {
+               printf("%.6f ", generation[i].gene[j]); 
+            }
         }
 
         printf(" : fitness is %d\n", generation[i].fitness);
@@ -88,6 +92,15 @@ void tournament_selection(individual *population, individual *offspring) {
 
 }
 
+float RandomFloat(float min, float max)
+{
+    float random = ((float) rand()) / (float) RAND_MAX;
+
+    float range = max - min; 
+
+    return (random*range) + min;
+}
+
 void crossover(individual *offspring) {
 
     float random;
@@ -116,12 +129,20 @@ void crossover(individual *offspring) {
             
             temp = parent_1;
 
-            for(j = crossover_point; j < N; j++) {
-                parent_1.gene[j] = parent_2.gene[j];
-            }
+            
+            for(int j = 0; j < crossover_point; j++)
+            {       
+                float alpha = 0.1;
 
-            for(k = crossover_point; k < N; k++) {
-                parent_2.gene[k] = temp.gene[k];
+                float min = std::fmin(parent_1.gene[j], parent_2.gene[j]);
+
+                float max = std::fmax(parent_1.gene[j], parent_2.gene[j]);
+
+                float range = max - min;
+
+                parent_1.gene[j] = RandomFloat(min - range * alpha, max - range * alpha);
+
+                parent_2.gene[j] = RandomFloat(min - range * alpha, max - range * alpha);
             }
 
             l++;         
@@ -147,17 +168,22 @@ void mutate(individual *offspring) {
             // check gene[j] is not output
 
             if(random <= PROB_M) {
-                if(offspring[i].gene[j] == 2) {
+   
+                if((j + 1) % 8 == 0) {
                     offspring[i].gene[j] = rand() % 2;
-                } else if(offspring[i].gene[j] == 0){
-                    offspring[i].gene[j] = (rand() % 2) + 1;
-                } else {
-                    int random_choice = rand() % 2;
-                    if(random_choice == 1) {
-                        offspring[i].gene[j] = 2;
-                    } else {
+                } else {  
+                    
+                    std::random_device rd;
+                    std::mt19937 gen(rd());
+                    std::normal_distribution<> d(0, 0.01);
+                    float increment = d(gen);
+                    offspring[i].gene[j] += d(gen);
+
+                    if(offspring[i].gene[j] > 1) {
                         offspring[i].gene[j] = 0;
-                    }
+                    } else if (offspring[i].gene[j] < 0) {
+                        offspring[i].gene[j] = 1;
+                    }                  
                 }
                                
                 k++;
@@ -186,7 +212,7 @@ void calculate_individual_fitness(individual *individual, rule *input_rules) {
             rules[i].condition[j] = individual->gene[k++];    
  
         }
-        rules[i].output = individual->gene[k++];      
+        rules[i].output = (int)individual->gene[k++];      
     }
 
     for(i = 0; i < R; i++) {
@@ -211,9 +237,10 @@ int compare_condition(rule *individual_rule, rule *input_rule) {
     int condition_match_total = 0;
 
     for(int i = 0; i < C; i++) {
-        if(individual_rule->condition[i] > 1) {
-            condition_match_total++;
-        } else if(individual_rule->condition[i] == input_rule->condition[i]) {
+        // if(individual_rule->condition[i] > 1) {
+        //     condition_match_total++;
+        // } else 
+        if(individual_rule->condition[i] == input_rule->condition[i]) {
             condition_match_total++;
         }
     }
@@ -249,7 +276,7 @@ void print_individual(individual *individual) {
     int i;
 
     for(i = 0; i < N; i++) {
-        printf("%d", individual->gene[i]);
+        printf("%.6f", individual->gene[i]);
     }
 
     printf(" : fitness is %d\n", individual->fitness);

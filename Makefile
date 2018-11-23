@@ -1,13 +1,13 @@
-CC = gcc
-CFLAGS = -Wall
+CC = g++
+CPPLAGS = -Wall 
 DEPS = population_operations.h
 OBJ = main.o population_operations.o
 
-%.o: %.c $(DEPS)
-	$(CC) $(CFLAGS) -c -o $@ $<
+%.o: %.cpp $(DEPS)
+	$(CC) $(CPPFLAGS) -c -o $@ $<
 
 main: $(OBJ)
-	gcc $(CFLAGS) -o $@ $^
+	$(CC) $(CPPFLAGS) -o $@ $^
 
 clean:
 	rm -f *.o main population_operations

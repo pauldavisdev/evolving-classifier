@@ -4,23 +4,23 @@
 
 #define RAND_SEED 12354
 
-#define RUNS 10
+#define RUNS 1
 
-#define N 80
+#define N 1000
 
-#define P 80
+#define P 400
 
-#define G 250
+#define G 2000
 
 #define C 7
 
-#define R 10
+#define R 100
 
-#define INPUT_R 100
+#define INPUT_R 500
 
-#define PROB_C 0.8
+#define PROB_C 0.7
 
-#define PROB_M 0.0125
+#define PROB_M 0.007
 
 #define BUF_SIZE 9999
 

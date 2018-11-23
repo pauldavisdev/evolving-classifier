@@ -77,35 +77,35 @@ int main(int argc, char *argv[])
     fclose(rp);
     /* end reading input data */
 
-    // for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++)
-    // {
+    for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++)
+    {
 
-    //     int roulette_wheel = 0;
+        int roulette_wheel = 0;
 
-    //     if (argc == 2)
-    //     {
-    //         if (!strcmp(argv[1], "-rw"))
-    //         {
-    //             roulette_wheel = 1;
-    //         }
-    //     }
+        if (argc == 2)
+        {
+            if (!strcmp(argv[1], "-rw"))
+            {
+                roulette_wheel = 1;
+            }
+        }
 
-    //     generate_random_population(population);
+         generate_random_population(population);
 
-    //     number_of_generations = 0;
+        number_of_generations = 0;
 
-    //     while (number_of_generations < G)
-    //     {
+        while (number_of_generations < G)
+        {
             
-    //         for (i = 0; i < P; i++) {
-    //             calculate_individual_fitness(&population[i], input_rules);
-    //         }
+            for (i = 0; i < P; i++) {
+                calculate_individual_fitness(&population[i], input_rules);
+            }
 
-    //         calculate_population_fitness(population, &current_fitness_info);
+             calculate_population_fitness(population, &current_fitness_info);
 
-    //         get_best_individual(population, &best_individual);
+             get_best_individual(population, &best_individual);
 
-    //         print_generation(population, &current_fitness_info);
+             print_generation(population, &current_fitness_info);
 
     //         printf("best individual: ");
 
@@ -117,36 +117,37 @@ int main(int argc, char *argv[])
 
     //         total_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.total;
 
-    //         number_of_generations++;
+             number_of_generations++;
 
-    //         if (roulette_wheel == 1)
-    //         {
-    //             roulette_wheel_selection(population, offspring, &current_fitness_info);
-    //         }
-    //         else
-    //         {
-    //             tournament_selection(population, offspring);
-    //         }
+            if (roulette_wheel == 1)
+            {
+                roulette_wheel_selection(population, offspring, &current_fitness_info);
+            }
+            else
+            {
+                tournament_selection(population, offspring);
+            }
 
     //         printf("\nGeneration %d\n", number_of_generations);
 
-    //         crossover(offspring);
+             crossover(offspring);
 
-    //         mutate(offspring);
+            mutate(offspring);
 
     //         //copy best results from offspring to population
-    //         memcpy(&population, &offspring, sizeof(offspring));
-
+             memcpy(&population, &offspring, sizeof(offspring));
+            if(best_individual.fitness > 0) {
     //         // replace the worst individual of population with the best individual of previous gen's
-    //         replace_worst_individual(population, &best_individual);
-    //     }
+             replace_worst_individual(population, &best_individual);
+            }
+         }
 
     //     printf("number of runs %d", number_of_runs + 1);
         
     //     //plot_graph(x, y, G);
-    // }
+    }
 
-    // /* write run/generation fitness stats to csv file */
+    /* write run/generation fitness stats to csv file */
 
     // FILE *fp;
 
@@ -197,7 +198,7 @@ int main(int argc, char *argv[])
     // }
 
     // fclose(fp);
-    // /* end writing to csv file */
+    /* end writing to csv file */
 
     return 0;
 }
