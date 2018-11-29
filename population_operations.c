@@ -10,7 +10,6 @@ void generate_random_population(individual *population) {
     for(i = 0; i < P; i++) {
 
         for(j = 0; j < N; j++) {
-
             population[i].gene[j] = rand() % 3;
         }
 
