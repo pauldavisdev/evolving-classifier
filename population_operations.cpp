@@ -233,14 +233,17 @@ void calculate_individual_fitness(individual *individual, rule *input_rules) {
 }
 
 int compare_condition(rule *individual_rule, rule *input_rule) {   
+
     
+    float range = 0.2f;
+
     int condition_match_total = 0;
 
     for(int i = 0; i < C; i++) {
         // if(individual_rule->condition[i] > 1) {
         //     condition_match_total++;
         // } else 
-        if(individual_rule->condition[i] == input_rule->condition[i]) {
+        if(individual_rule->condition[i] > (input_rule->condition[i] - range) && individual_rule->condition[i] < (input_rule->condition[i] + range)) {
             condition_match_total++;
         }
     }
