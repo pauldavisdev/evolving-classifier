@@ -6,22 +6,31 @@
 
 #define RUNS 10
 
+// gene size
 #define N 40
 
+// population size
 #define P 400
 
+// number of generations
 #define G 1000
 
+// rule condition length
 #define C 7
 
+// number of rules in gene
 #define R 5
 
+// number of rules to read in from input data file
 #define INPUT_R 64
 
+// crossover rate
 #define PROB_C 0.75
 
+// mutation rate
 #define PROB_M 0.027
 
+// input data buffer size
 #define BUF_SIZE 255
 
 typedef struct {

@@ -9,6 +9,7 @@
 
 int main(int argc, char *argv[])
 {
+    // random seed
     srand(time(NULL));
 
     int number_of_runs = 0;
@@ -74,9 +75,10 @@ int main(int argc, char *argv[])
     fclose(rp);
     /* end reading input data */
 
-    for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++)
-    {
-
+    /* begin run */
+    for (number_of_runs = 0; number_of_runs < RUNS; number_of_runs++) {
+        
+        /* args handling */
         int roulette_wheel = 0;
 
         if (argc == 2)
@@ -86,11 +88,13 @@ int main(int argc, char *argv[])
                 roulette_wheel = 1;
             }
         }
+        /* end args handling*/
 
         generate_random_population(population);
 
         number_of_generations = 0;
-
+        
+        /* main GA loop*/
         while (number_of_generations < G)
         {
             
@@ -108,6 +112,7 @@ int main(int argc, char *argv[])
 
             print_individual(&best_individual);
 
+            // keep track of fitness stats to write to csv after end of run
             max_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.max;
 
             average_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.average;
@@ -136,12 +141,11 @@ int main(int argc, char *argv[])
 
             // replace the worst individual of population with the best individual of previous gen's
             replace_worst_individual(population, &best_individual);
-        }
+        } /* end main GA loop */
 
         printf("number of runs %d", number_of_runs + 1);
-        
-        //plot_graph(x, y, G);
-    }
+
+    } /* end run */
 
     /* write run/generation fitness stats to csv file */
 
