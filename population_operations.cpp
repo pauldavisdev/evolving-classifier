@@ -92,13 +92,13 @@ void tournament_selection(individual *population, individual *offspring) {
 
 }
 
-float RandomFloat(float min, float max)
+float get_random_float(float min, float max)
 {
     float random = ((float) rand()) / (float) RAND_MAX;
 
     float range = max - min; 
 
-    return (random*range) + min;
+    return (random * range) + min;
 }
 
 void crossover(individual *offspring) {
@@ -129,7 +129,7 @@ void crossover(individual *offspring) {
             
             temp = parent_1;
 
-            
+            // blend crossover
             for(int j = 0; j < crossover_point; j++)
             {       
                 float alpha = 0.1;
@@ -140,9 +140,9 @@ void crossover(individual *offspring) {
 
                 float range = max - min;
 
-                parent_1.gene[j] = RandomFloat(min - range * alpha, max - range * alpha);
+                parent_1.gene[j] = get_random_float(min - range * alpha, max - range * alpha);
 
-                parent_2.gene[j] = RandomFloat(min - range * alpha, max - range * alpha);
+                parent_2.gene[j] = get_random_float(min - range * alpha, max - range * alpha);
             }
 
             l++;         
@@ -173,9 +173,16 @@ void mutate(individual *offspring) {
                     offspring[i].gene[j] = rand() % 2;
                 } else {  
                     
+                    //gaussian mutation
                     std::random_device rd;
+
+                    //mtwister random algorithm
                     std::mt19937 gen(rd());
+                    
+                    //select distribution interval
                     std::normal_distribution<> d(0, 0.01);
+                    
+                    // add distribution
                     float increment = d(gen);
                     offspring[i].gene[j] += d(gen);
 
