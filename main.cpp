@@ -101,21 +101,21 @@ int main(int argc, char *argv[])
                 calculate_individual_fitness(&population[i], input_rules);
             }
 
-             calculate_population_fitness(population, &current_fitness_info);
+            calculate_population_fitness(population, &current_fitness_info);
 
-             get_best_individual(population, &best_individual);
+            get_best_individual(population, &best_individual);
 
-             print_generation(population, &current_fitness_info);
+            print_generation(population, &current_fitness_info);
 
-    //         printf("best individual: ");
+            printf("best individual: ");
 
-    //         print_individual(&best_individual);
+            print_individual(&best_individual);
 
-    //         max_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.max;
+            max_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.max;
 
-    //         average_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.average;
+            average_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.average;
 
-    //         total_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.total;
+            total_fitness_array[number_of_runs][number_of_generations] = current_fitness_info.total;
 
              number_of_generations++;
 
@@ -128,76 +128,76 @@ int main(int argc, char *argv[])
                 tournament_selection(population, offspring);
             }
 
-    //         printf("\nGeneration %d\n", number_of_generations);
+            printf("\nGeneration %d\n", number_of_generations);
 
-             crossover(offspring);
+            crossover(offspring);
 
             mutate(offspring);
 
-    //         //copy best results from offspring to population
-             memcpy(&population, &offspring, sizeof(offspring));
+            //copy best results from offspring to population
+            memcpy(&population, &offspring, sizeof(offspring));
             if(best_individual.fitness > 0) {
-    //         // replace the worst individual of population with the best individual of previous gen's
-             replace_worst_individual(population, &best_individual);
+                // replace the worst individual of population with the best individual of previous gen's
+                replace_worst_individual(population, &best_individual);
             }
          }
 
-    //     printf("number of runs %d", number_of_runs + 1);
+        printf("number of runs %d", number_of_runs + 1);
         
     //     //plot_graph(x, y, G);
     }
 
     /* write run/generation fitness stats to csv file */
 
-    // FILE *fp;
+    FILE *fp;
 
-    // char dateTimeString[30];
+    char dateTimeString[30];
 
-    // struct tm *timenow;
+    struct tm *timenow;
 
-    // time_t now = time(NULL);
+    time_t now = time(NULL);
 
-    // timenow = gmtime(&now);
+    timenow = gmtime(&now);
 
-    // char folderName[40];
+    char folderName[40];
 
-    // sprintf(folderName, "N%d_P%d_C%.3f_M%.4f", N, P, PROB_C, PROB_M);
+    sprintf(folderName, "N%d_P%d_C%.3f_M%.4f", N, P, PROB_C, PROB_M);
 
-    // mkdir(folderName, 0777);
+    mkdir(folderName, 0777);
 
-    // strftime(dateTimeString, sizeof(dateTimeString), "data2_%Y%m%d_%H%M%S_", timenow);
+    strftime(dateTimeString, sizeof(dateTimeString), "data2_%Y%m%d_%H%M%S_", timenow);
 
-    // char filename[80];
+    char filename[80];
 
-    // sprintf(filename, "%s/%s.csv", folderName, dateTimeString);
+    sprintf(filename, "%s/%s.csv", folderName, dateTimeString);
 
-    // fp = fopen(filename, "w");
+    fp = fopen(filename, "w");
 
-    // for (int i = 0; i < G; i++)
-    // {
+    for (int i = 0; i < G; i++)
+    {
 
-    //     if (i == 0)
-    //     {
+        if (i == 0)
+        {
 
-    //         fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\nGeneration,", PROB_C, PROB_M, P);
+            fprintf(fp, "crossover: %.3f mutation: %.3f population: %d\nGeneration,", PROB_C, PROB_M, P);
 
-    //         for (int k = 0; k < RUNS; k++)
-    //         {
-    //             fprintf(fp, "Run %d Max,Run %d Total,Run %d Average,", k + 1, k + 1, k + 1);
-    //         }
+            for (int k = 0; k < RUNS; k++)
+            {
+                fprintf(fp, "Run %d Max,Run %d Total,Run %d Average,", k + 1, k + 1, k + 1);
+            }
 
-    //         fprintf(fp, "\n");
-    //     }
+            fprintf(fp, "\n");
+        }
 
-    //     fprintf(fp, "%d,", i + 1);
-    //     for (int j = 0; j < RUNS; j++)
-    //     {
-    //         fprintf(fp, "%d,%d,%.3f,", max_fitness_array[j][i], total_fitness_array[j][i], average_fitness_array[j][i]);
-    //     }
-    //     fprintf(fp, "\n");
-    // }
+        fprintf(fp, "%d,", i + 1);
+        for (int j = 0; j < RUNS; j++)
+        {
+            fprintf(fp, "%d,%d,%.3f,", max_fitness_array[j][i], total_fitness_array[j][i], average_fitness_array[j][i]);
+        }
+        fprintf(fp, "\n");
+    }
 
-    // fclose(fp);
+    fclose(fp);
     /* end writing to csv file */
 
     return 0;
